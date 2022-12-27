@@ -1,7 +1,15 @@
-import { StyleSheet, Text, View, Button, FlatList } from "react-native"
+import {
+	StyleSheet,
+	Text,
+	View,
+	Button,
+	FlatList,
+	TextInput,
+} from "react-native"
 import { useState, useEffect } from "react"
 import { CheckBox } from "@rneui/themed"
-import { color } from "@rneui/themed/dist/config"
+import { ActionSheet, ActionSheetButton } from "react-native-actionsheet"
+import { ActionSheetProvider } from "react-native-actionsheet"
 
 // value={isSelected} onValueChange={setIsSelected}
 
@@ -12,7 +20,25 @@ const TodoScreen = () => {
 
 	const [todos, setTodos] = useState([])
 
-	const url = "https://localhost:3000/todos"
+	const url = "http://localhost:3000/todos"
+	const url2 = "https://randomuser.me/api/?results=5"
+
+	const options = ["Add Todo", "Cancel"]
+
+	const showActionSheet = () => {
+		ActionSheet.show(
+			{
+				options,
+				cancelButtonIndex: 1,
+				title: "Add Todo",
+			},
+			(buttonIndex) => {
+				if (buttonIndex === 0) {
+					return <TextInput />
+				}
+			},
+		)
+	}
 
 	const getTodos = async () => {
 		const headers = {
@@ -24,9 +50,13 @@ const TodoScreen = () => {
 			method: "GET",
 			headers: headers,
 		}
-		const response = await fetch(url, requestOptions).then((data) => {
-			console.log(data)
-		})
+
+		await fetch(url, requestOptions)
+			.then((data) => data.json())
+
+			.then((parsedData) => setTodos(parsedData))
+
+			.catch((error) => console.log(error))
 	}
 
 	useEffect(() => {
@@ -63,18 +93,20 @@ const TodoScreen = () => {
 					onPress={() => setCheckDone(!checkDone)}
 					containerStyle={{
 						backgroundColor: "#1ca96a",
+						width: 75,
 					}}
 					textStyle={{ color: "#ffffff" }}
 					checkedColor="#ffffff"
 				/>
 			</View>
-			<Button title="Add a New Todo" />
+			<Button title="Add a New Todo" onPress={showActionSheet} />
 			<View style={styles.list_of_todos}>
-				{/* <FlatList
+				<Text></Text>
+				<FlatList
 					data={todos}
 					keyExtractor={({ id }) => id.toString()}
-					renderItem={({ item }) => <Text>{item.content}</Text>}
-				/> */}
+					renderItem={({ item }) => <Text>{item.results.email}</Text>}
+				/>
 			</View>
 		</View>
 	)

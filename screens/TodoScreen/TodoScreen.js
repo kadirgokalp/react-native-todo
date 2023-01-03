@@ -9,9 +9,12 @@ import {
 	Modal,
 } from "react-native"
 import { useState, useEffect, useRef } from "react"
-import { CheckBox } from "@rneui/themed"
+// import { CheckBox } from "@rneui/themed"
 import { ActionSheet, ActionSheetButton } from "react-native-actionsheet"
 import { ActionSheetProvider } from "react-native-actionsheet"
+import { TODO_CATEGORY } from "../../common/Enums"
+import TodoCheckBox from "../../components/Checkbox/TodoCheckBox"
+import TodoItem from "../../components/TodoItem/TodoItem"
 
 // value={isSelected} onValueChange={setIsSelected}
 
@@ -26,7 +29,8 @@ const TodoScreen = () => {
 
 	const [newTodos, setNewTodos] = useState([])
 
-	const url = "http://127.0.0.1:3000/todos"
+	const url2 = "http://127.0.0.1:3000/todos"
+	const url = "http://192.168.1.103:3000/todos"
 
 	const postTodos = () => {
 		const headers = {
@@ -36,7 +40,7 @@ const TodoScreen = () => {
 
 		const requestOptions = {
 			method: "POST",
-			body: JSON.stringify({ content: apiValue, category: 1 }),
+			body: JSON.stringify({ content: apiValue }),
 			headers: headers,
 		}
 
@@ -63,81 +67,57 @@ const TodoScreen = () => {
 			.then((parsedData) => {
 				setTodos(parsedData)
 				setTotalCount(parsedData.length)
+				setNewTodos(parsedData)
 			}) //parsedData.lenght alınacak
 
 			.catch((error) => console.log(error))
 	}
 
-	const checkTodoStatus = () => {
-		let newArr = []
+	const checkEachItem = (checkItem) => {
+		const temp_array = [
+			checkTodo ? TODO_CATEGORY.TODO : null,
+			checkInProgress ? TODO_CATEGORY.IN_PROGRESS : null,
+			checkDone ? TODO_CATEGORY.DONE : null,
+		]
 
-		if (checkTodo) {
-			newArr = todos.filter((todo, index) => {
-				return todo.category == 1
-			})
-			setNewTodos(newArr)
-			console.log(newArr)
-		}
-
-		if (checkInProgress) {
-			newArr = todos.filter((todo, index) => {
-				return todo.category == 2
-			})
-			setNewTodos(newArr)
-		}
-
-		if (checkDone) {
-			newArr = todos.filter((todo, index) => {
-				return todo.category == 3
-			})
-			setNewTodos(newArr)
+		if (temp_array.includes(checkItem.category)) {
+			return checkItem
 		}
 	}
 
+	const checkTodoStatus = () => {
+		const result = todos.filter(checkEachItem)
+		setNewTodos(result)
+	}
+
+	const renderSingleTodoItem = ({ item }) => <TodoItem todo_item={item} />
+
+	useEffect(() => {
+		checkTodoStatus()
+	}, [checkDone, checkInProgress, checkTodo])
+
 	useEffect(() => {
 		getTodos()
-		checkTodoStatus()
-	}, [apiValue, checkDone, checkInProgress, checkTodo])
+	}, []) //apiValue
 
 	return (
 		<View style={styles.container}>
 			<View style={styles.checkbox_container}>
-				<CheckBox
+				<TodoCheckBox
 					style={styles.checkbox}
 					title="Todo"
 					checked={checkTodo}
 					onPress={() => setCheckTodo(!checkTodo)}
-					containerStyle={{
-						backgroundColor: "#1ca96a",
-						//marginLeft: -15,
-						width: 100,
-					}}
-					textStyle={{ color: "#ffffff" }}
-					checkedColor="#ffffff"
 				/>
-				<CheckBox
+				<TodoCheckBox
 					title="In Progress"
 					checked={checkInProgress}
 					onPress={() => setCheckInProgress(!checkInProgress)}
-					containerStyle={{
-						backgroundColor: "#1ca96a",
-						width: 150,
-						marginLeft: -10,
-					}}
-					textStyle={{ color: "#ffffff" }}
-					checkedColor="#ffffff"
 				/>
-				<CheckBox
+				<TodoCheckBox
 					title="Done"
 					checked={checkDone}
 					onPress={() => setCheckDone(!checkDone)}
-					containerStyle={{
-						backgroundColor: "#1ca96a",
-						width: 75,
-						marginLeft: -10,
-					}}
-					textStyle={{ color: "#ffffff" }}
-					checkedColor="#ffffff"
 				/>
 			</View>
 
@@ -159,9 +139,9 @@ const TodoScreen = () => {
 					LIST OF TODOS
 				</Text>
 				<FlatList
-					data={todos}
+					data={newTodos}
 					keyExtractor={({ id }) => id.toString()}
-					renderItem={({ item }) => <Text>{item.content}</Text>}
+					renderItem={renderSingleTodoItem}
 				/>
 			</View>
 		</View>
@@ -184,10 +164,11 @@ const styles = StyleSheet.create({
 	},
 	list_of_todos: {
 		height: "70%",
-		backgroundColor: "#c1111157",
+		backgroundColor: "#1d11c157",
 		marginTop: 25,
 		borderRadius: 5,
 		paddingLeft: 10,
+		paddingRight: 10,
 	},
 	textInput: {
 		marginTop: -20,

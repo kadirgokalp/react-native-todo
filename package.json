@@ -11,6 +11,7 @@
   "dependencies": {
     "@react-navigation/native": "^6.1.1",
     "@react-navigation/native-stack": "^6.9.7",
+    "@reduxjs/toolkit": "^1.9.1",
     "@rneui/themed": "^4.0.0-rc.7",
     "expo": "~47.0.9",
     "expo-status-bar": "~1.4.2",
@@ -19,7 +20,9 @@
     "react-native-actionsheet": "^2.4.2",
     "react-native-paper": "^5.1.0",
     "react-native-safe-area-context": "4.4.1",
-    "react-native-svg": "13.4.0"
+    "react-native-svg": "13.4.0",
+    "react-redux": "^8.0.5",
+    "redux": "^4.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

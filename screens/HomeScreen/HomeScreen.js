@@ -40,21 +40,22 @@ const HomePage = ({ navigation }) => {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff",
-		marginTop: 80,
+		backgroundColor: "#000000",
+		marginTop: 0,
 		padding: 15,
 	},
 	header: {
 		height: 100,
 		width: "100%",
+		marginTop: 50,
 		alignItems: "center",
 		justifyContent: "center",
-		backgroundColor: "#33383a",
+		backgroundColor: "#cc2f1d",
 		borderRadius: 50,
 	},
 	todo_statics: {
 		height: "30%",
-		backgroundColor: "#167ec4",
+		backgroundColor: "#7f54c8",
 		color: "#fff",
 		borderRadius: 5,
 		marginBottom: 100,

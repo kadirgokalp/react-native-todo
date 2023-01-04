@@ -1,9 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit"
-import checkBoxSlice from "./slices/checkBoxSlice"
+import getTodoSlice from "./slices/getTodoSlice"
 
 const store = configureStore({
 	reducer: {
-		checkBox: checkBoxSlice,
+		getTodo: getTodoSlice,
 	},
 })
 

@@ -15,6 +15,9 @@ import { ActionSheetProvider } from "react-native-actionsheet"
 import { TODO_CATEGORY } from "../../common/Enums"
 import TodoCheckBox from "../../components/Checkbox/TodoCheckBox"
 import TodoItem from "../../components/TodoItem/TodoItem"
+import { useSelector } from "react-redux"
+import getTodo from "../../common/api/getTodo"
+import postTodo from "../../common/api/postTodo"
 
 // value={isSelected} onValueChange={setIsSelected}
 
@@ -23,54 +26,65 @@ const TodoScreen = () => {
 	const [checkInProgress, setCheckInProgress] = useState(true)
 	const [checkDone, setCheckDone] = useState(true)
 
-	const [todos, setTodos] = useState([])
+	// const [todos, setTodos] = useState([])
 	const [apiValue, setApiValue] = useState("")
 	const [totalCount, setTotalCount] = useState(0)
 
 	const [newTodos, setNewTodos] = useState([])
 
-	const url2 = "http://127.0.0.1:3000/todos"
-	const url = "http://192.168.1.103:3000/todos"
+	// const url2 = "http://127.0.0.1:3000/todos"
+	// const url = "http://192.168.1.103:3000/todos"
+
+	// const getTodos = async () => {
+	// 	const headers = {
+	// 		"Content-Type": "application/json",
+	// 		Accept: "application/json",
+	// 	}
+
+	// 	const requestOptions = {
+	// 		method: "GET",
+	// 		headers: headers,
+	// 	}
+
+	// 	await fetch(url, requestOptions)
+	// 		.then((data) => data.json())
+
+	// 		.then((parsedData) => {
+	// 			setTodos(parsedData)
+	// 			setTotalCount(parsedData.length)
+	// 			setNewTodos(parsedData)
+	// 		}) //parsedData.lenght alınacak
+
+	// 		.catch((error) => console.log(error))
+	// }
+
+	const todos = useSelector((state) => state.getTodo.todos)
+
+	useEffect(() => {
+		getTodo()
+	}, [])
 
 	const postTodos = () => {
-		const headers = {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-		}
+		// const headers = {
+		// 	"Content-Type": "application/json",
+		// 	Accept: "application/json",
+		// }
 
-		const requestOptions = {
-			method: "POST",
-			body: JSON.stringify({ content: apiValue }),
-			headers: headers,
-		}
+		// const requestOptions = {
+		// 	method: "POST",
+		// 	body: JSON.stringify({
+		// 		content: apiValue,
+		// 		category: TODO_CATEGORY.TODO,
+		// 	}),
+		// 	headers: headers,
+		// }
 
-		fetch(url, requestOptions)
-			.then((res) => res.json())
-			.then((parsedData) => setTodos(parsedData))
-			.catch((error) => console.log(error))
-	}
-
-	const getTodos = async () => {
-		const headers = {
-			"Content-Type": "application/json",
-			Accept: "application/json",
-		}
-
-		const requestOptions = {
-			method: "GET",
-			headers: headers,
-		}
-
-		await fetch(url, requestOptions)
-			.then((data) => data.json())
-
-			.then((parsedData) => {
-				setTodos(parsedData)
-				setTotalCount(parsedData.length)
-				setNewTodos(parsedData)
-			}) //parsedData.lenght alınacak
-
-			.catch((error) => console.log(error))
+		// fetch(url, requestOptions)
+		// 	.then((res) => res.json())
+		// 	.then((parsedData) => setTodos(parsedData))
+		// 	.catch((error) => console.log(error))
+		postTodo({ apiValue })
+		getTodo()
 	}
 
 	const checkEachItem = (checkItem) => {
@@ -88,17 +102,22 @@ const TodoScreen = () => {
 	const checkTodoStatus = () => {
 		const result = todos.filter(checkEachItem)
 		setNewTodos(result)
+		console.log(result)
 	}
 
 	const renderSingleTodoItem = ({ item }) => <TodoItem todo_item={item} />
+
+	const handleEmptyInputAsButtonClicked = () => {
+		setApiValue("")
+	}
 
 	useEffect(() => {
 		checkTodoStatus()
 	}, [checkDone, checkInProgress, checkTodo])
 
-	useEffect(() => {
-		getTodos()
-	}, []) //apiValue
+	// useEffect(() => {
+	// 	getTodos()
+	// }, []) //apiValue
 
 	return (
 		<View style={styles.container}>
@@ -127,7 +146,13 @@ const TodoScreen = () => {
 				placeholder="Enter your new ToDo here..."
 				onChangeText={(text) => setApiValue(text)}
 			/>
-			<Button title="Add a New Todo" onPress={() => setVisible(true)} />
+			<Button
+				title="Add a New Todo"
+				onPress={() => {
+					postTodos()
+					handleEmptyInputAsButtonClicked()
+				}}
+			/>
 			<View style={styles.list_of_todos}>
 				<Text
 					style={{

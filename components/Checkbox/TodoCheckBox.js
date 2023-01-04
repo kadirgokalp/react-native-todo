@@ -9,7 +9,7 @@ const TodoCheckBox = ({ title, isChecked, onPress }) => {
 			checked={isChecked}
 			onPress={onPress}
 			textStyle={{ color: "#ffffff" }}
-			checkedColor="#2e24b6"
+			checkedColor="#ffffff"
 			uncheckedColor="#ffffff"
 			center
 			containerStyle={{

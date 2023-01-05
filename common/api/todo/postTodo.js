@@ -1,21 +1,21 @@
 // Config
 
-import { API } from "./Config"
+import { API } from "../Config"
 
 // Redux
 
-import store from "../../redux/store"
+import store from "../../../redux/store"
 
 import {
 	postTodoApiRequest,
 	postTodoApiSuccess,
 	postTodoApiFailure,
-} from "../../redux/slices/getTodoSlice"
+} from "../../../redux/slices/getTodoSlice"
 // Helper
 
-import apiCall from "./apiCall"
+import apiCall from "../apiCall"
 
-import { TODO_CATEGORY } from "../Enums"
+import { TODO_CATEGORY } from "../../Enums"
 
 export default async function postTodo({ apiValue }) {
 	const headers = {

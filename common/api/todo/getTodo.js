@@ -1,20 +1,20 @@
 // Config
 
-import { API } from "./Config"
+import { API } from "../Config"
 
 // Redux
 
-import store from "../../redux/store"
+import store from "../../../redux/store"
 
 import {
 	todoApiRequest,
 	todoApiSuccess,
 	todoApiFailure,
-} from "../../redux/slices/getTodoSlice"
+} from "../../../redux/slices/getTodoSlice"
 
 // Helper
 
-import apiCall from "./apiCall"
+import apiCall from "../apiCall"
 
 export default async function getTodo() {
 	const headers = {

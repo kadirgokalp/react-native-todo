@@ -8,6 +8,7 @@ import {
 	Animated,
 	Modal,
 } from "react-native"
+import { styles } from "./TodoScreen.styles"
 import { useState, useEffect, useRef } from "react"
 // import { CheckBox } from "@rneui/themed"
 import { ActionSheet, ActionSheetButton } from "react-native-actionsheet"
@@ -16,8 +17,8 @@ import { TODO_CATEGORY } from "../../common/Enums"
 import TodoCheckBox from "../../components/Checkbox/TodoCheckBox"
 import TodoItem from "../../components/TodoItem/TodoItem"
 import { useSelector } from "react-redux"
-import getTodo from "../../common/api/getTodo"
-import postTodo from "../../common/api/postTodo"
+import getTodo from "../../common/api/todo/getTodo"
+import postTodo from "../../common/api/todo/postTodo"
 
 // value={isSelected} onValueChange={setIsSelected}
 
@@ -32,32 +33,6 @@ const TodoScreen = () => {
 
 	const [newTodos, setNewTodos] = useState([])
 
-	// const url2 = "http://127.0.0.1:3000/todos"
-	// const url = "http://192.168.1.103:3000/todos"
-
-	// const getTodos = async () => {
-	// 	const headers = {
-	// 		"Content-Type": "application/json",
-	// 		Accept: "application/json",
-	// 	}
-
-	// 	const requestOptions = {
-	// 		method: "GET",
-	// 		headers: headers,
-	// 	}
-
-	// 	await fetch(url, requestOptions)
-	// 		.then((data) => data.json())
-
-	// 		.then((parsedData) => {
-	// 			setTodos(parsedData)
-	// 			setTotalCount(parsedData.length)
-	// 			setNewTodos(parsedData)
-	// 		}) //parsedData.lenght alınacak
-
-	// 		.catch((error) => console.log(error))
-	// }
-
 	const todos = useSelector((state) => state.getTodo.todos)
 
 	useEffect(() => {
@@ -65,24 +40,6 @@ const TodoScreen = () => {
 	}, [])
 
 	const postTodos = () => {
-		// const headers = {
-		// 	"Content-Type": "application/json",
-		// 	Accept: "application/json",
-		// }
-
-		// const requestOptions = {
-		// 	method: "POST",
-		// 	body: JSON.stringify({
-		// 		content: apiValue,
-		// 		category: TODO_CATEGORY.TODO,
-		// 	}),
-		// 	headers: headers,
-		// }
-
-		// fetch(url, requestOptions)
-		// 	.then((res) => res.json())
-		// 	.then((parsedData) => setTodos(parsedData))
-		// 	.catch((error) => console.log(error))
 		postTodo({ apiValue })
 		getTodo()
 	}
@@ -172,35 +129,5 @@ const TodoScreen = () => {
 		</View>
 	)
 }
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		padding: 15,
-	},
-
-	checkbox_container: {
-		height: 60,
-		backgroundColor: "#1ca96a",
-		flexDirection: "row",
-		marginBottom: 50,
-		borderRadius: 10,
-	},
-	list_of_todos: {
-		height: "70%",
-		backgroundColor: "#1d11c157",
-		marginTop: 25,
-		borderRadius: 5,
-		paddingLeft: 10,
-		paddingRight: 10,
-	},
-	textInput: {
-		marginTop: -20,
-		marginBottom: 15,
-		borderWidth: 1,
-		borderColor: "blue",
-	},
-})
 
 export default TodoScreen

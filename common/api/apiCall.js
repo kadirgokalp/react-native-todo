@@ -32,6 +32,7 @@ export default async function apiCall({
 		})
 
 	if (response) {
+		//console.table kullanabilrsin response için
 		return response
 	} else {
 		return null

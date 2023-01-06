@@ -1,18 +1,16 @@
 import {
-	StyleSheet,
 	Text,
 	View,
 	Button,
 	FlatList,
 	TextInput,
-	Animated,
 	Modal,
+	Pressable,
+	TouchableOpacity,
 } from "react-native"
 import { styles } from "./TodoScreen.styles"
-import { useState, useEffect, useRef } from "react"
-// import { CheckBox } from "@rneui/themed"
-import { ActionSheet, ActionSheetButton } from "react-native-actionsheet"
-import { ActionSheetProvider } from "react-native-actionsheet"
+import { useState, useEffect } from "react"
+
 import { TODO_CATEGORY } from "../../common/Enums"
 import TodoCheckBox from "../../components/Checkbox/TodoCheckBox"
 import TodoItem from "../../components/TodoItem/TodoItem"
@@ -20,14 +18,12 @@ import { useSelector } from "react-redux"
 import getTodo from "../../common/api/todo/getTodo"
 import postTodo from "../../common/api/todo/postTodo"
 
-// value={isSelected} onValueChange={setIsSelected}
-
 const TodoScreen = () => {
 	const [checkTodo, setCheckTodo] = useState(true)
 	const [checkInProgress, setCheckInProgress] = useState(true)
 	const [checkDone, setCheckDone] = useState(true)
+	const [modalVisible, setModalVisible] = useState(false)
 
-	// const [todos, setTodos] = useState([])
 	const [apiValue, setApiValue] = useState("")
 	const [totalCount, setTotalCount] = useState(0)
 
@@ -57,24 +53,21 @@ const TodoScreen = () => {
 	}
 
 	const checkTodoStatus = () => {
-		const result = todos.filter(checkEachItem)
+		const result = todos.filter(checkEachItem) //result ismini değiştir
 		setNewTodos(result)
-		console.log(result)
 	}
 
-	const renderSingleTodoItem = ({ item }) => <TodoItem todo_item={item} />
+	const handlerenderSingleTodoItem = ({ item }) => {
+		return <TodoItem todo_item={item} />
+	}
 
 	const handleEmptyInputAsButtonClicked = () => {
 		setApiValue("")
 	}
 
 	useEffect(() => {
-		checkTodoStatus()
+		checkTodoStatus() //EĞER BİR FONKSYİONA PARAMETRE EKLİYOSAN ()=> handle ... şeklinde yazman gerekiypr
 	}, [checkDone, checkInProgress, checkTodo])
-
-	// useEffect(() => {
-	// 	getTodos()
-	// }, []) //apiValue
 
 	return (
 		<View style={styles.container}>
@@ -103,13 +96,41 @@ const TodoScreen = () => {
 				placeholder="Enter your new ToDo here..."
 				onChangeText={(text) => setApiValue(text)}
 			/>
-			<Button
-				title="Add a New Todo"
+
+			<TouchableOpacity
+				style={styles.todoButton}
 				onPress={() => {
 					postTodos()
 					handleEmptyInputAsButtonClicked()
+					setModalVisible(true)
 				}}
-			/>
+			>
+				<Text style={styles.buttonText}>Add a New Todo</Text>
+			</TouchableOpacity>
+			<Modal
+				animationType="slide"
+				transparent={true}
+				visible={modalVisible}
+				onRequestClose={() => {
+					Alert.alert("Modal has been closed.")
+					setModalVisible(!modalVisible)
+				}}
+			>
+				<View style={styles.centeredView}>
+					<View style={styles.modalView}>
+						<Text style={styles.modalText}>New Todo Added</Text>
+						<Pressable
+							style={[styles.button, styles.buttonClose]}
+							onPress={() => setModalVisible(!modalVisible)}
+						>
+							<Text style={styles.checkBoxTextStyle}>
+								Hide Modal
+							</Text>
+						</Pressable>
+					</View>
+				</View>
+			</Modal>
+
 			<View style={styles.list_of_todos}>
 				<Text
 					style={{
@@ -123,7 +144,7 @@ const TodoScreen = () => {
 				<FlatList
 					data={newTodos}
 					keyExtractor={({ id }) => id.toString()}
-					renderItem={renderSingleTodoItem}
+					renderItem={handlerenderSingleTodoItem}
 				/>
 			</View>
 		</View>

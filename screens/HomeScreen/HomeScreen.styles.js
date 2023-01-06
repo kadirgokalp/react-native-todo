@@ -42,4 +42,16 @@ export const styles = StyleSheet.create({
 		fontSize: 20,
 		fontWeight: "600",
 	},
+
+	homeButton: {
+		borderWidth: 2,
+		borderColor: "#FFFFFF",
+		backgroundColor: "#07847c",
+		width: "70%",
+		justifyContent: "center",
+		alignItems: "center",
+		marginLeft: 50,
+		borderRadius: 10,
+		height: 50,
+	},
 })

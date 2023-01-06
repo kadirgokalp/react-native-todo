@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button } from "react-native"
+import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native"
 import { useState, useEffect } from "react"
 import { useSelector } from "react-redux"
 import { TODO_CATEGORY } from "../../common/Enums"
@@ -7,10 +7,11 @@ import { styles } from "./HomeScreen.styles"
 const HomePage = ({ navigation }) => {
 	const [totalCount, setTotalCount] = useState(0)
 	const url = "http://192.168.1.103:3000/todos"
+	const url2 = "http://localhost:3000/todos"
 
-	const [todoLength, setTodoLength] = useState(0)
-	const [inProgressLength, setInProgressLength] = useState(0)
-	const [doneLength, setDoneLength] = useState(0)
+	const [todoCount, setTodoCount] = useState(0) //count olacak
+	const [inProgressCount, setInProgressCount] = useState(0)
+	const [doneCount, setDoneCount] = useState(0)
 	const [todoDonePercentage, setTodoDonePercentage] = useState(0)
 
 	const todos = useSelector((state) => state.getTodo.todos)
@@ -26,40 +27,43 @@ const HomePage = ({ navigation }) => {
 			headers: headers,
 		}
 
-		await fetch(url, requestOptions)
+		await fetch(url2, requestOptions)
 			.then((data) => data.json())
 
 			.then((parsedData) => {
 				setTotalCount(parsedData.length)
-				console.log(parsedData.length)
 			}) //parsedData.lenght alınacak
 
 			.catch((error) => console.log(error))
 	}
 
 	const getEachCategoryLength = () => {
-		let newTodoArr = []
+		let newTodoArr = [] //const olacak
 		let newInProgressArr = []
 		let newDoneArr = []
 		let percentage
 
 		newTodoArr = todos.filter((todo) => {
 			return todo.category == TODO_CATEGORY.TODO
-		})
-		setTodoLength(newTodoArr.length)
+		}) //.length olarak yapabilirsin
+		setTodoCount(newTodoArr.length)
 
 		newInProgressArr = todos.filter((todo) => {
 			return todo.category == TODO_CATEGORY.IN_PROGRESS
 		})
-		setInProgressLength(newInProgressArr.length)
+		setInProgressCount(newInProgressArr.length)
 		newDoneArr = todos.filter((todo) => {
 			return todo.category == TODO_CATEGORY.DONE
 		})
-		setDoneLength(newDoneArr.length)
+		setDoneCount(newDoneArr.length)
 
 		percentage = ((newDoneArr.length / totalCount) * 100).toFixed(1)
 
 		setTodoDonePercentage(percentage)
+	}
+
+	const handleNavigate = () => {
+		navigation.navigate("Todos", { language: "turkish" })
 	}
 
 	useEffect(() => {
@@ -86,27 +90,28 @@ const HomePage = ({ navigation }) => {
 			<View style={styles.todo_statics}>
 				<View style={styles.left_todo}>
 					<Text style={styles.todo_headers}>TODO LENGTHS</Text>
-					<Text style={styles.todo_text}>Todo : {todoLength}</Text>
+					<Text style={styles.todo_text}>Todo : {todoCount}</Text>
 					<Text style={styles.todo_text}>
-						In Progress : {inProgressLength}
+						In Progress : {inProgressCount}
 					</Text>
-					<Text style={styles.todo_text}>Done : {doneLength}</Text>
+					<Text style={styles.todo_text}>Done : {doneCount}</Text>
 				</View>
 
 				<View style={styles.right_todo}>
 					<Text style={styles.todo_headers}>OVERALL</Text>
 					<Text style={styles.todo_text}>
-						{doneLength}/{totalCount}
+						{doneCount}/{totalCount}
 					</Text>
 					<Text style={styles.todo_text}>% {todoDonePercentage}</Text>
 				</View>
 			</View>
-			<Button
-				title="List Items"
-				onPress={() =>
-					navigation.navigate("Todos", { language: "turkish" })
-				}
-			/>
+
+			<TouchableOpacity
+				style={styles.homeButton}
+				onPress={handleNavigate}
+			>
+				<Text style={styles.todo_text}>List Items</Text>
+			</TouchableOpacity>
 		</View>
 	)
 }

@@ -1,20 +1,47 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native"
+// React
 import { useState, useEffect } from "react"
+
+// React Native
+
+import { StyleSheet, Text, View, Button, TouchableOpacity } from "react-native"
+
+// Redux
 import { useSelector } from "react-redux"
-import { TODO_CATEGORY } from "../../common/Enums"
+
+// Style
+
 import { styles } from "./HomeScreen.styles"
 
-const HomePage = ({ navigation }) => {
-	const [totalCount, setTotalCount] = useState(0)
-	const url = "http://192.168.1.103:3000/todos"
-	const url2 = "http://localhost:3000/todos"
+// Common Components
+import { TODO_CATEGORY } from "../../common/Enums"
 
-	const [todoCount, setTodoCount] = useState(0) //count olacak
+//COMPONENT
+
+const HomePage = ({ navigation }) => {
+	// useSelector
+	const todos = useSelector((state) => state.getTodo.todos)
+
+	// useState
+	const [totalCount, setTotalCount] = useState(0)
+	const [todoCount, setTodoCount] = useState(0)
 	const [inProgressCount, setInProgressCount] = useState(0)
 	const [doneCount, setDoneCount] = useState(0)
 	const [todoDonePercentage, setTodoDonePercentage] = useState(0)
 
-	const todos = useSelector((state) => state.getTodo.todos)
+	// Definition
+	const url = "http://192.168.1.103:3000/todos"
+	const url2 = "http://localhost:3000/todos"
+
+	// useEffect
+	useEffect(() => {
+		getTodos()
+	}, [])
+
+	useEffect(() => {
+		getEachCategoryLength()
+	}, [todos])
+
+	// Function
 
 	const getTodos = async () => {
 		const headers = {
@@ -65,14 +92,6 @@ const HomePage = ({ navigation }) => {
 	const handleNavigate = () => {
 		navigation.navigate("Todos", { language: "turkish" })
 	}
-
-	useEffect(() => {
-		getTodos()
-	}, [])
-
-	useEffect(() => {
-		getEachCategoryLength()
-	}, [todos])
 
 	return (
 		<View style={styles.container}>

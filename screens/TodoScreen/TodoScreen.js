@@ -1,3 +1,7 @@
+// React
+import { useState, useEffect } from "react"
+
+// React Native
 import {
 	Text,
 	View,
@@ -8,17 +12,30 @@ import {
 	Pressable,
 	TouchableOpacity,
 } from "react-native"
+
+// Redux
+
+import { useSelector } from "react-redux"
+
+// Style
 import { styles } from "./TodoScreen.styles"
-import { useState, useEffect } from "react"
+
+// Common Components
 
 import { TODO_CATEGORY } from "../../common/Enums"
-import TodoCheckBox from "../../components/Checkbox/TodoCheckBox"
-import TodoItem from "../../components/TodoItem/TodoItem"
-import { useSelector } from "react-redux"
 import getTodo from "../../common/api/todo/getTodo"
 import postTodo from "../../common/api/todo/postTodo"
+// Component
+
+import TodoCheckBox from "../../components/Checkbox/TodoCheckBox"
+import TodoItem from "../../components/TodoItem/TodoItem"
 
 const TodoScreen = () => {
+	// useSelector
+	const todos = useSelector((state) => state.getTodo.todos)
+
+	// useState
+
 	const [checkTodo, setCheckTodo] = useState(true)
 	const [checkInProgress, setCheckInProgress] = useState(true)
 	const [checkDone, setCheckDone] = useState(true)
@@ -29,11 +46,17 @@ const TodoScreen = () => {
 
 	const [newTodos, setNewTodos] = useState([])
 
-	const todos = useSelector((state) => state.getTodo.todos)
+	// useEffect
 
 	useEffect(() => {
 		getTodo()
 	}, [])
+
+	useEffect(() => {
+		checkTodoStatus() //EĞER BİR FONKSYİONA PARAMETRE EKLİYOSAN ()=> handle ... şeklinde yazman gerekiypr
+	}, [checkDone, checkInProgress, checkTodo])
+
+	// Function
 
 	const postTodos = () => {
 		postTodo({ apiValue })
@@ -64,10 +87,6 @@ const TodoScreen = () => {
 	const handleEmptyInputAsButtonClicked = () => {
 		setApiValue("")
 	}
-
-	useEffect(() => {
-		checkTodoStatus() //EĞER BİR FONKSYİONA PARAMETRE EKLİYOSAN ()=> handle ... şeklinde yazman gerekiypr
-	}, [checkDone, checkInProgress, checkTodo])
 
 	return (
 		<View style={styles.container}>
